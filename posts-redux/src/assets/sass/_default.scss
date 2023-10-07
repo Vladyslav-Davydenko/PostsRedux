@@ -108,6 +108,9 @@ select {
   &:focus {
     outline: 0;
   }
+  background-color: transparent;
+  border-bottom: 1px solid $primary-color;
+  padding: .5rem 1rem;
 }
 
 // reset firefox placeholder opacity

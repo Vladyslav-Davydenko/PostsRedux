@@ -1,0 +1,11 @@
+.post-container{
+    margin-block: 3rem;
+    padding: 2rem;
+    border: 1px solid $primary-color;
+    border-radius: 1rem;
+
+    & .post-title,
+    & .post-content{
+        margin-bottom: 1rem;
+    }
+}
