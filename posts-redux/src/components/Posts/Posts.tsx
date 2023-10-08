@@ -4,9 +4,9 @@ import Post from "../Post/Post"
 
 export default function Posts() {
     const posts = useSelector(SelectAllPosts)
+    const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
 
-
-    const listOfPosts = posts.map(post => {
+    const listOfPosts = orderedPosts.map(post => {
         return(
             <Post post={post} key={post.id}/>
         )

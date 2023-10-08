@@ -14,4 +14,9 @@
         display: flex;
         gap: 1rem;
     }
+
+    & .post-time{
+        float: right;
+        margin-top: .5rem;
+    }
 }
