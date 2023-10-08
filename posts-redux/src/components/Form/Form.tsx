@@ -1,11 +1,13 @@
 import { useState, ChangeEvent } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { selectAllUsers } from "../../helpers/users/UsersSlice"
+import { addNewPost } from "../../helpers/posts/PostsSlice"
 
 export default function Form(){
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [userId, setUserId] = useState('')
+    const dispatch = useDispatch()
 
     const users = useSelector(selectAllUsers)
 
@@ -15,14 +17,19 @@ export default function Form(){
 
     const usersOptions = users.map(user => {
         return (
-            <option key={user.id} value={user.name}>{user.name}</option>
+            <option key={user.id} value={user.id}>{user.name}</option>
         )
     })
 
     const canSave = [title, content, userId].every(Boolean)
 
     function onSavePostClicked(){
-        console.log("Send")
+        if (title && content){
+            dispatch(addNewPost(title, userId, content))
+        }
+
+        setTitle("")
+        setContent("")
     }
 
     return (

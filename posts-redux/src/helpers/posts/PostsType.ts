@@ -3,6 +3,7 @@ export interface PostType {
     title: string;
     content: string;
     date: string;
+    userID: string;
     reactions: {
       thumbsUp: number;
       wow: number;
