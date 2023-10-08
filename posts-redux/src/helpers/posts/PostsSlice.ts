@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
 import sub from "date-fns/sub";
 import { PostsType, PostType } from "./PostsType";
+import { ReactionType } from "../../components/Post/PostReactions";
 
 const initialState = {
         posts: [
@@ -62,11 +63,18 @@ const PostsSlice = createSlice({
                     payload: newPost
                 }
             } 
+        },
+        addReaction: (state, action) => {
+            const {postID, reaction} = action.payload;
+            const currentPost = state.posts.find(post => post.id === postID)
+            if(currentPost){
+                currentPost.reactions[reaction as ReactionType] += 1;
+            }
         }
     }
 })
 
-export const { addNewPost } = PostsSlice.actions
+export const { addNewPost, addReaction } = PostsSlice.actions
 
 export const SelectAllPosts = (state: {posts: PostsType}) => state.posts.posts
 
