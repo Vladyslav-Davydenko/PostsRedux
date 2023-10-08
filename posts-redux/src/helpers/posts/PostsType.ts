@@ -1,7 +1,7 @@
 export interface PostType {
     id: string;
     title: string;
-    content: string;
+    body: string;
     date: string;
     userID: string;
     reactions: {
@@ -13,6 +13,10 @@ export interface PostType {
     };
 }
 
+type status = 'idle' | 'loading' | 'succeeded' | 'failed'
+
 export type PostsType = {
-    posts:PostType[]
+    posts: PostType[],
+    status: status,
+    error: null | string
 }

@@ -12,7 +12,7 @@ export default function Post(props: {post: PostType}) {
             {post.title}
             </h3>
             <p className="post-content">
-                {post.content}
+                {post.body}
             </p>
             <PostAuthor userID={post.userID}/>
             <PostReactions post={post} />
