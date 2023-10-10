@@ -12,9 +12,9 @@ export default function Post(props: {post: PostType}) {
             {post.title}
             </h3>
             <p className="post-content">
-                {post.body}
+                {post.body.substring(0, 100)}
             </p>
-            <PostAuthor userID={post.userID}/>
+            <PostAuthor userID={post.userId}/>
             <PostReactions post={post} />
             <PostDate date={post.date}/>
         </div>

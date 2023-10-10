@@ -1,12 +1,17 @@
 .post-container{
     margin-block: 3rem;
     padding: 2rem;
+    padding-bottom: 4rem;
     border: 1px solid $primary-color;
     border-radius: 1rem;
 
     & .post-title,
     & .post-content{
         margin-bottom: 1rem;
+    }
+
+    & .post-title{
+        font-size: 1.3rem;
     }
 
     & .post-reaction{

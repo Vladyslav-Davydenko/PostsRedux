@@ -4,6 +4,7 @@ import { fetchPosts } from "../../helpers/posts/PostsSlice"
 import { useEffect } from "react"
 import Post from "../Post/Post"
 import { AppDispatch } from "../../helpers/store"
+import Loader from "../UI/Loader/Loader"
 
 export default function Posts() {
     const dispatch: AppDispatch = useDispatch()
@@ -17,18 +18,26 @@ export default function Posts() {
         }
     }, [dispatch, status])
 
-    const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+    let content;
 
-    const listOfPosts = orderedPosts.map(post => {
-        return(
-            <Post post={post} key={post.id}/>
-        )
-    })
+    if(status === 'loading'){
+        content = <Loader />
+    } else if(status === 'succeeded'){
+        const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+        content = orderedPosts.map(post => {
+            return(
+                <Post post={post} key={post.id}/>
+            )
+        })
+    } else if(status === 'failed'){
+        content = <p>{error}</p>
+    }
+
     return (
         <div>
             <h2>Posts</h2>
             <div className="posts">
-                {listOfPosts}
+                {content}
             </div>
         </div>
     )

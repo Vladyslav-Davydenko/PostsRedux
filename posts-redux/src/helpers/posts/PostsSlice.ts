@@ -12,13 +12,13 @@ const initialState: PostsType = {
 }
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-    try{
-        const responce = await axios.get(FETCH_POSTS_URL)
-        return responce.data
-    }
-    catch(err: any){
-        return err.message
-    }
+    const responce = await axios.get(FETCH_POSTS_URL)
+    return responce.data
+})
+
+export const addPost = createAsyncThunk("posts/addPost", async (initialPost: {title: string, body: string, userId: string}) => {
+    const responce = await axios.post(FETCH_POSTS_URL, initialPost)
+    return responce.data
 })
 
 const PostsSlice = createSlice({
@@ -29,12 +29,12 @@ const PostsSlice = createSlice({
             reducer(state, action: PayloadAction<PostType>){
                 state.posts.push(action.payload)
             },
-            prepare(title: string, userID: string, body: string){
+            prepare(title: string, userId: string, body: string){
                 const newPost: PostType = {
                     id: nanoid(),
                     title,
                     body,
-                    userID,
+                    userId,
                     date: new Date().toISOString(),
                     reactions: {
                       thumbsUp: 0,
@@ -87,8 +87,26 @@ const PostsSlice = createSlice({
             state.status = "failed"
             state.error = action.error.message ?? "Something wrong"
         })
-    },
-})
+        .addCase(addPost.fulfilled, (state, action: PayloadAction<{title: string, body: string, userId: string}>) => {
+            const newPost: PostType = {
+                id: nanoid(),
+                title: action.payload.title,
+                body: action.payload.body,
+                userId: action.payload.userId,
+                date: new Date().toISOString(),
+                reactions: {
+                  thumbsUp: 0,
+                  wow: 0,
+                  heart: 0,
+                  rocket: 0,
+                  coffee: 0
+                }
+              }
+              state.posts.push(newPost)
+            })
+            },
+            
+        })
 
 export const { addNewPost, addReaction } = PostsSlice.actions
 

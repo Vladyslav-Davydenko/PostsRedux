@@ -1,13 +1,16 @@
 import { useState, ChangeEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { selectAllUsers } from "../../helpers/users/UsersSlice"
-import { addNewPost } from "../../helpers/posts/PostsSlice"
+import { addPost } from "../../helpers/posts/PostsSlice"
+import { Status } from "../../helpers/posts/PostsType"
+import { AppDispatch } from "../../helpers/store"
 
 export default function Form(){
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [userId, setUserId] = useState('')
-    const dispatch = useDispatch()
+    const [addRequestStatus, setAddRequestStatus] = useState<Status>("idle")
+    const dispatch: AppDispatch = useDispatch()
 
     const users = useSelector(selectAllUsers)
 
@@ -21,15 +24,24 @@ export default function Form(){
         )
     })
 
-    const canSave = [title, content, userId].every(Boolean)
+    const canSave = [title, content, userId].every(Boolean) && addRequestStatus === "idle"
 
     function onSavePostClicked(){
-        if (title && content){
-            dispatch(addNewPost(title, userId, content))
-        }
+        if (canSave){
+            try{
+                setAddRequestStatus("loading")
+                const body = content
+                dispatch(addPost({title, body, userId})).unwrap()
 
-        setTitle("")
-        setContent("")
+                setTitle("")
+                setContent("")
+                setUserId("")
+            } catch(err: any){
+                console.error("Failed to save the post", err)
+            } finally {
+                setAddRequestStatus("idle")
+            }
+        }
     }
 
     return (

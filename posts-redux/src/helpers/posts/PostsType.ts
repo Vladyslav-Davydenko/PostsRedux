@@ -3,7 +3,7 @@ export interface PostType {
     title: string;
     body: string;
     date: string;
-    userID: string;
+    userId: string;
     reactions: {
       thumbsUp: number;
       wow: number;
@@ -13,10 +13,10 @@ export interface PostType {
     };
 }
 
-type status = 'idle' | 'loading' | 'succeeded' | 'failed'
+export type Status = 'idle' | 'loading' | 'succeeded' | 'failed'
 
 export type PostsType = {
     posts: PostType[],
-    status: status,
+    status: Status,
     error: null | string
 }
