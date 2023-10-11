@@ -1,9 +1,9 @@
 .post-container{
-    margin-block: 3rem;
     padding: 2rem;
-    padding-bottom: 4rem;
+    padding-bottom: 2rem;
     border: 1px solid $primary-color;
     border-radius: 1rem;
+    max-width: 30rem;
 
     & .post-title,
     & .post-content{
@@ -23,5 +23,10 @@
     & .post-time{
         float: right;
         margin-top: .5rem;
+    }
+
+    & .post-link{
+        text-decoration: underline;
+        float: right;
     }
 }

@@ -63,6 +63,7 @@ const PostsSlice = createSlice({
             const posts = action.payload.map(post => {
                 return {
                     ...post,
+                    id: String(post.id),
                     date: new Date().toISOString(),
                     reactions: {
                         thumbsUp: 0,
@@ -113,5 +114,6 @@ export const { addNewPost, addReaction } = PostsSlice.actions
 export const selectAllPosts = (state: {posts: PostsType}) => state.posts.posts
 export const selectStatus = (state: {posts: PostsType}) => state.posts.status
 export const selectError = (state: {posts: PostsType}) => state.posts.error
+export const selectPostById = (state: {posts: PostsType}, postID: string) => state.posts.posts.find(post => post.id === postID)
 
 export default PostsSlice.reducer
