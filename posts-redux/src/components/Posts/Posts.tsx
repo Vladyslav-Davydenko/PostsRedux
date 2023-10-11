@@ -1,22 +1,12 @@
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { selectAllPosts, selectError, selectStatus } from "../../helpers/posts/PostsSlice"
-import { fetchPosts } from "../../helpers/posts/PostsSlice"
-import { useEffect } from "react"
 import Post from "../Post/Post"
-import { AppDispatch } from "../../helpers/store"
 import Loader from "../UI/Loader/Loader"
 
 export default function Posts() {
-    const dispatch: AppDispatch = useDispatch()
     const posts = useSelector(selectAllPosts)
     const status = useSelector(selectStatus)
     const error = useSelector(selectError)
-
-    useEffect(() => {
-        if(status === "idle"){
-            dispatch(fetchPosts())
-        }
-    }, [dispatch, status])
 
     let content;
 
