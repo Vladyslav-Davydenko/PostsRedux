@@ -121,7 +121,6 @@ const PostsSlice = createSlice({
             state.posts.push(newPost)
         })
         .addCase(updatePost.fulfilled, (state, action: PayloadAction<PostType>) => {
-            console.log(action.payload)
             if(!action.payload?.id){
                 console.log('Update could not complete')
                 console.log(action.payload)
@@ -142,9 +141,6 @@ export const { addNewPost, addReaction } = PostsSlice.actions
 export const selectAllPosts = (state: {posts: PostsType}) => state.posts.posts
 export const selectStatus = (state: {posts: PostsType}) => state.posts.status
 export const selectError = (state: {posts: PostsType}) => state.posts.error
-export const selectPostById = (state: {posts: PostsType}, postID: string | undefined) => {
-    if(postID)
-    return state.posts.posts.find(post => post.id === postID)
-}
+export const selectPostById = (state: {posts: PostsType}, postID: string | undefined) => state.posts.posts.find(post => post.id === postID)
 
 export default PostsSlice.reducer
