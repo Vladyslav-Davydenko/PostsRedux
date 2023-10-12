@@ -1,32 +1,32 @@
-.post-container{
-    padding: 2rem;
-    padding-bottom: 2rem;
-    border: 1px solid $primary-color;
-    border-radius: 1rem;
-    width: 30rem;
+.post-container {
+  padding: 2rem;
+  padding-bottom: 2rem;
+  border: 1px solid $primary-color;
+  border-radius: 1rem;
+  width: 30rem;
 
-    & .post-title,
-    & .post-content{
-        margin-bottom: 1rem;
-    }
+  & .post-title,
+  & .post-content {
+    margin-bottom: 1rem;
+  }
 
-    & .post-title{
-        font-size: 1.3rem;
-    }
+  & .post-title {
+    font-size: 1.3rem;
+  }
 
-    & .post-reaction{
-        margin-top: 1rem;
-        display: flex;
-        gap: 1rem;
-    }
+  & .post-reaction {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
 
-    & .post-time{
-        float: right;
-        margin-top: .5rem;
-    }
+  & .post-time {
+    float: right;
+    margin-top: 0.5rem;
+  }
 
-    & .post-link{
-        text-decoration: underline;
-        float: right;
-    }
+  & .post-link {
+    text-decoration: underline;
+    float: right;
+  }
 }

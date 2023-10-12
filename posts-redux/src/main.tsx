@@ -1,24 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.scss'
-import store from './helpers/store.ts'
-import { Provider } from 'react-redux'
-import { fetchUsers } from './helpers/users/UsersSlice.ts'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { fetchPosts } from './helpers/posts/PostsSlice.ts'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.scss";
+import store from "./helpers/store.ts";
+import { Provider } from "react-redux";
+import { fetchUsers } from "./helpers/users/UsersSlice.ts";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { fetchPosts } from "./helpers/posts/PostsSlice.ts";
 
-store.dispatch(fetchUsers())
-store.dispatch(fetchPosts())
+store.dispatch(fetchUsers());
+store.dispatch(fetchPosts());
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path='/*' element={<App />} />
+          <Route path="/*" element={<App />} />
         </Routes>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
