@@ -9,11 +9,11 @@ export default function Post(props: {post: PostType}) {
     
     return (
         <div className="post-container" key={post.id}>
-            <h3 className="post-title">
+            <h2 className="post-title">
             {post.title}
-            </h3>
+            </h2>
             <p className="post-content">
-                {post.body.substring(0, 75)}...
+            {post.body.length > 75 ? `${post.body.substring(0, 75)}...` : post.body}
             </p>
             <Link className="post-link" to={`post/${post.id}`}>View Post</Link>
             <PostAuthor userID={post.userId}/>

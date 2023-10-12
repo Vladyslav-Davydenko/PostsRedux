@@ -3,7 +3,7 @@ import { PostsType, PostType } from "./PostsType";
 import { ReactionType } from "../../components/Post/PostReactions";
 import axios from "axios";
 
-const FETCH_POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
+const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 
 const initialState: PostsType = {
         posts: [],
@@ -12,13 +12,28 @@ const initialState: PostsType = {
 }
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-    const responce = await axios.get(FETCH_POSTS_URL)
+    const responce = await axios.get(POSTS_URL)
     return responce.data
 })
 
 export const addPost = createAsyncThunk("posts/addPost", async (initialPost: {title: string, body: string, userId: string}) => {
-    const responce = await axios.post(FETCH_POSTS_URL, initialPost)
-    return responce.data
+    try{
+        const responce = await axios.post(POSTS_URL, initialPost)
+        return responce.data
+    } catch(err: any){
+        return err.message;
+    }
+
+})
+
+export const updatePost = createAsyncThunk("posts/updatePost", async (initialPost: Omit<PostType, "date">) => {
+    const { id } = initialPost
+    try{
+        const responce = await axios.put(`${POSTS_URL}/${id}`, initialPost)
+        return responce.data
+    } catch(err: any){
+        return err.message;
+    }
 })
 
 const PostsSlice = createSlice({
@@ -103,17 +118,33 @@ const PostsSlice = createSlice({
                   coffee: 0
                 }
               }
-              state.posts.push(newPost)
-            })
-            },
-            
+            state.posts.push(newPost)
         })
+        .addCase(updatePost.fulfilled, (state, action: PayloadAction<PostType>) => {
+            console.log(action.payload)
+            if(!action.payload?.id){
+                console.log('Update could not complete')
+                console.log(action.payload)
+                return;
+            }
+            action.payload.id = String(action.payload.id)
+            let { id } = action.payload
+            action.payload.date = new Date().toISOString()
+            const posts = state.posts.filter(post => post.id !== id)
+            state.posts = [...posts, action.payload]
+        })
+        },  
+    })
+        
 
 export const { addNewPost, addReaction } = PostsSlice.actions
 
 export const selectAllPosts = (state: {posts: PostsType}) => state.posts.posts
 export const selectStatus = (state: {posts: PostsType}) => state.posts.status
 export const selectError = (state: {posts: PostsType}) => state.posts.error
-export const selectPostById = (state: {posts: PostsType}, postID: string) => state.posts.posts.find(post => post.id === postID)
+export const selectPostById = (state: {posts: PostsType}, postID: string | undefined) => {
+    if(postID)
+    return state.posts.posts.find(post => post.id === postID)
+}
 
 export default PostsSlice.reducer
