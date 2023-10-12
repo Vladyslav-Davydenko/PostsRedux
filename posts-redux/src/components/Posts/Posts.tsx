@@ -25,7 +25,6 @@ export default function Posts() {
 
     return (
         <div className="container">
-            <h2>Posts</h2>
             <div className="posts">
                 {content}
             </div>

@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 export default function SinglePostPage() {
     const param = useParams()
     console.log(param.postID)
-    const postID: string = param.postID ?? ""
+    const postID = param.postID ?? ""
     const post = useSelector((state: {posts: PostsType}) => selectPostById(state, postID))
 
     if(!post){
