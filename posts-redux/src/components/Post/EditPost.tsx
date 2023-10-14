@@ -2,7 +2,11 @@ import { ChangeEvent } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectPostById, updatePost } from "../../helpers/posts/PostsSlice";
+import {
+  deletePost,
+  selectPostById,
+  updatePost,
+} from "../../helpers/posts/PostsSlice";
 import { PostsType, Status } from "../../helpers/posts/PostsType";
 import { selectAllUsers } from "../../helpers/users/UsersSlice";
 import { AppDispatch } from "../../helpers/store";
@@ -77,6 +81,23 @@ export default function EditPost() {
     }
   }
 
+  function onDeletePostClicked() {
+    try {
+      if (!post?.id) return;
+      setAddRequestStatus("loading");
+      dispatch(deletePost({ id: post?.id })).unwrap();
+
+      setTitle("");
+      setContent("");
+      setUserId("");
+      navigate("/");
+    } catch (err: any) {
+      console.error("Failed to delete the post", err);
+    } finally {
+      setAddRequestStatus("idle");
+    }
+  }
+
   return (
     <section className="posts-form">
       <h2>Add a New Post</h2>
@@ -107,6 +128,13 @@ export default function EditPost() {
         />
         <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
+        </button>
+        <button
+          type="button"
+          className="btn-delete"
+          onClick={onDeletePostClicked}
+        >
+          Delete Post
         </button>
       </form>
     </section>

@@ -41,6 +41,21 @@ export const updatePost = createAsyncThunk(
       const responce = await axios.put(`${POSTS_URL}/${id}`, initialPost);
       return responce.data;
     } catch (err: any) {
+      //return err.message;
+      return initialPost; // only for testing Redux
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "posts/delePost",
+  async (initialPost: { id: string }) => {
+    try {
+      const { id } = initialPost;
+      const responce = await axios.delete(`${POSTS_URL}/${id}`);
+      if (responce?.status === 200) return initialPost;
+      return `${responce?.status}: ${responce?.statusText}`;
+    } catch (err: any) {
       return err.message;
     }
   }
@@ -149,6 +164,20 @@ const PostsSlice = createSlice({
           action.payload.date = new Date().toISOString();
           const posts = state.posts.filter((post) => post.id !== id);
           state.posts = [...posts, action.payload];
+        }
+      )
+      .addCase(
+        deletePost.fulfilled,
+        (state, action: PayloadAction<PostType>) => {
+          if (!action.payload?.id) {
+            console.log("Delete could not complete");
+            console.log(action.payload);
+            return;
+          }
+          console.log(action.payload);
+          const { id } = action.payload;
+          const posts = state.posts.filter((post) => post.id !== id);
+          state.posts = posts;
         }
       );
   },

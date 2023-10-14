@@ -40,4 +40,10 @@
       transform: translateY(3px);
     }
   }
+
+  & .btn-delete {
+    bottom: 2rem;
+    left: 2rem;
+    right: auto;
+  }
 }

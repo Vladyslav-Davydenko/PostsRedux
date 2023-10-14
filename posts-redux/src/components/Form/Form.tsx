@@ -4,11 +4,13 @@ import { selectAllUsers } from "../../helpers/users/UsersSlice";
 import { addPost } from "../../helpers/posts/PostsSlice";
 import { Status } from "../../helpers/posts/PostsType";
 import { AppDispatch } from "../../helpers/store";
+import { useNavigate } from "react-router-dom";
 
 export default function Form() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
+  const navigate = useNavigate();
   const [addRequestStatus, setAddRequestStatus] = useState<Status>("idle");
   const dispatch: AppDispatch = useDispatch();
 
@@ -42,6 +44,7 @@ export default function Form() {
         setTitle("");
         setContent("");
         setUserId("");
+        navigate("/");
       } catch (err: any) {
         console.error("Failed to save the post", err);
       } finally {
