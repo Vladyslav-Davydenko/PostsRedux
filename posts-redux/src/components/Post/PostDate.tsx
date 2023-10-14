@@ -1,6 +1,7 @@
 import { formatDistanceToNow, parseISO } from "date-fns";
+import React from "react";
 
-export default function PostDate(props: { date: string }) {
+const PostDateComponent = (props: { date: string }) => {
   const date = props.date;
   let timeAgo = "";
   if (date) {
@@ -12,4 +13,7 @@ export default function PostDate(props: { date: string }) {
       <i>{timeAgo}</i>
     </span>
   );
-}
+};
+
+const PostDate = React.memo(PostDateComponent);
+export default PostDate;
