@@ -1,0 +1,10 @@
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  border: 1px solid $primary-color;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: $container-width;
+}

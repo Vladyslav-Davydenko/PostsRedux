@@ -1,6 +1,7 @@
 import {
   PayloadAction,
   createAsyncThunk,
+  createSelector,
   createSlice,
   nanoid,
 } from "@reduxjs/toolkit";
@@ -23,7 +24,7 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
 
 export const addPost = createAsyncThunk(
   "posts/addPost",
-  async (initialPost: { title: string; body: string; userId: string }) => {
+  async (initialPost: { title: string; body: string; userId: number }) => {
     try {
       const responce = await axios.post(POSTS_URL, initialPost);
       return responce.data;
@@ -65,30 +66,30 @@ const PostsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    addNewPost: {
-      reducer(state, action: PayloadAction<PostType>) {
-        state.posts.push(action.payload);
-      },
-      prepare(title: string, userId: string, body: string) {
-        const newPost: PostType = {
-          id: nanoid(),
-          title,
-          body,
-          userId,
-          date: new Date().toISOString(),
-          reactions: {
-            thumbsUp: 0,
-            wow: 0,
-            heart: 0,
-            rocket: 0,
-            coffee: 0,
-          },
-        };
-        return {
-          payload: newPost,
-        };
-      },
-    },
+    // addNewPost: {
+    //   reducer(state, action: PayloadAction<PostType>) {
+    //     state.posts.push(action.payload);
+    //   },
+    //   prepare(title: string, userId: number, body: string) {
+    //     const newPost: PostType = {
+    //       id: nanoid(),
+    //       title,
+    //       body,
+    //       userId,
+    //       date: new Date().toISOString(),
+    //       reactions: {
+    //         thumbsUp: 0,
+    //         wow: 0,
+    //         heart: 0,
+    //         rocket: 0,
+    //         coffee: 0,
+    //       },
+    //     };
+    //     return {
+    //       payload: newPost,
+    //     };
+    //   },
+    // },
     addReaction: (state, action) => {
       const { postID, reaction } = action.payload;
       const currentPost = state.posts.find((post) => post.id === postID);
@@ -132,7 +133,7 @@ const PostsSlice = createSlice({
         addPost.fulfilled,
         (
           state,
-          action: PayloadAction<{ title: string; body: string; userId: string }>
+          action: PayloadAction<{ title: string; body: string; userId: number }>
         ) => {
           const newPost: PostType = {
             id: nanoid(),
@@ -183,7 +184,7 @@ const PostsSlice = createSlice({
   },
 });
 
-export const { addNewPost, addReaction } = PostsSlice.actions;
+export const { addReaction } = PostsSlice.actions;
 
 export const selectAllPosts = (state: { posts: PostsType }) =>
   state.posts.posts;
@@ -193,5 +194,14 @@ export const selectPostById = (
   state: { posts: PostsType },
   postID: string | undefined
 ) => state.posts.posts.find((post) => post.id === postID);
+
+export const selectPostsByUserID = createSelector(
+  [selectAllPosts, (_, userId) => userId],
+  (posts, userId) => posts.filter((post) => post.userId === userId)
+);
+// export const selectPostsByUserID = (
+//   state: { posts: PostsType },
+//   userId: number
+// ) => state.posts.posts.filter((post) => post.userId === userId);
 
 export default PostsSlice.reducer;

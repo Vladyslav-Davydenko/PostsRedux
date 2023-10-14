@@ -64,7 +64,7 @@ export default function EditPost() {
             id: post.id,
             title,
             body: content,
-            userId,
+            userId: Number(userId),
             reactions: post.reactions,
           })
         ).unwrap();

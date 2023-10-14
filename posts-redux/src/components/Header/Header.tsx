@@ -18,6 +18,12 @@ export default function Header() {
           >
             Form
           </NavLink>
+          <NavLink
+            to="/user"
+            className={({ isActive }) => (isActive ? "link active" : "link")}
+          >
+            Users
+          </NavLink>
         </ul>
       </nav>
     </header>

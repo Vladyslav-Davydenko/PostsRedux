@@ -39,7 +39,7 @@ export default function Form() {
       try {
         setAddRequestStatus("loading");
         const body = content;
-        dispatch(addPost({ title, body, userId })).unwrap();
+        dispatch(addPost({ title, body, userId: Number(userId) })).unwrap();
 
         setTitle("");
         setContent("");
