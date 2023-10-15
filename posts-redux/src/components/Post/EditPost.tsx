@@ -19,7 +19,7 @@ export default function EditPost() {
   const [addRequestStatus, setAddRequestStatus] = useState<Status>("idle");
 
   const post = useSelector((state: { posts: PostsType }) =>
-    selectPostById(state, postID)
+    selectPostById(state, Number(postID))
   );
   const users = useSelector(selectAllUsers);
 

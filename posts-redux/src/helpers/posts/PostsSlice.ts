@@ -3,7 +3,6 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
-  nanoid,
 } from "@reduxjs/toolkit";
 import { PostsType, PostType } from "./PostsType";
 import { ReactionType } from "../../components/Post/PostReactions";
@@ -50,7 +49,7 @@ export const updatePost = createAsyncThunk(
 
 export const deletePost = createAsyncThunk(
   "posts/delePost",
-  async (initialPost: { id: string }) => {
+  async (initialPost: { id: number }) => {
     try {
       const { id } = initialPost;
       const responce = await axios.delete(`${POSTS_URL}/${id}`);
@@ -104,7 +103,7 @@ const PostsSlice = createSlice({
         const posts = action.payload.map((post) => {
           return {
             ...post,
-            id: String(post.id),
+            id: post.id,
             date: new Date().toISOString(),
             reactions: {
               thumbsUp: 0,
@@ -136,7 +135,7 @@ const PostsSlice = createSlice({
           action: PayloadAction<{ title: string; body: string; userId: number }>
         ) => {
           const newPost: PostType = {
-            id: nanoid(),
+            id: state.posts.length + 1,
             title: action.payload.title,
             body: action.payload.body,
             userId: action.payload.userId,
@@ -160,7 +159,6 @@ const PostsSlice = createSlice({
             console.log(action.payload);
             return;
           }
-          action.payload.id = String(action.payload.id);
           let { id } = action.payload;
           action.payload.date = new Date().toISOString();
           const posts = state.posts.filter((post) => post.id !== id);
@@ -190,10 +188,8 @@ export const selectAllPosts = (state: { posts: PostsType }) =>
   state.posts.posts;
 export const selectStatus = (state: { posts: PostsType }) => state.posts.status;
 export const selectError = (state: { posts: PostsType }) => state.posts.error;
-export const selectPostById = (
-  state: { posts: PostsType },
-  postID: string | undefined
-) => state.posts.posts.find((post) => post.id === postID);
+export const selectPostById = (state: { posts: PostsType }, postID: number) =>
+  state.posts.posts.find((post) => post.id === postID);
 
 export const selectPostsByUserID = createSelector(
   [selectAllPosts, (_, userId) => userId],

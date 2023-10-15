@@ -1,5 +1,5 @@
 export interface PostType {
-  id: string;
+  id: number;
   title: string;
   body: string;
   date: string;

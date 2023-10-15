@@ -10,7 +10,7 @@ export default function SinglePostPage() {
   const param = useParams();
   const postID = param.postID;
   const post = useSelector((state: { posts: PostsType }) =>
-    selectPostById(state, postID)
+    selectPostById(state, Number(postID))
   );
 
   if (!post) {
