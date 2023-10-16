@@ -7,10 +7,9 @@ import {
   selectPostById,
   updatePost,
 } from "../../helpers/posts/PostsSlice";
-import { PostType, Status } from "../../helpers/posts/PostsType";
+import { Status } from "../../helpers/posts/PostsType";
 import { selectAllUsers } from "../../helpers/users/UsersSlice";
-import { AppDispatch } from "../../helpers/store";
-import { EntityState } from "@reduxjs/toolkit";
+import { AppDispatch, RootState } from "../../helpers/store";
 
 export default function EditPost() {
   const params = useParams();
@@ -19,7 +18,7 @@ export default function EditPost() {
   const dispatch: AppDispatch = useDispatch();
   const [addRequestStatus, setAddRequestStatus] = useState<Status>("idle");
 
-  const post = useSelector((state: { posts: EntityState<PostType> }) =>
+  const post = useSelector((state: RootState) =>
     selectPostById(state, Number(postID))
   );
   const users = useSelector(selectAllUsers);

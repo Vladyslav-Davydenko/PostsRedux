@@ -20,7 +20,7 @@ export default function Post(props: { postID: number }) {
               ? `${post.body.substring(0, 75)}...`
               : post.body}
           </p>
-          <Link className="post-link" to={`post/${postID}`}>
+          <Link className="post-link" to={`/post/${postID}`}>
             View Post
           </Link>
           <PostAuthor userID={post.userId} />
