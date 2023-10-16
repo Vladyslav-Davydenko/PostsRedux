@@ -14,9 +14,3 @@ export interface PostType {
 }
 
 export type Status = "idle" | "loading" | "succeeded" | "failed";
-
-export type PostsType = {
-  posts: PostType[];
-  status: Status;
-  error: null | string;
-};

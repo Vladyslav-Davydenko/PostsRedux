@@ -6,9 +6,10 @@ import {
   createEntityAdapter,
   EntityState,
 } from "@reduxjs/toolkit";
-import { PostsType, PostType, Status } from "./PostsType";
+import { PostType, Status } from "./PostsType";
 import { ReactionType } from "../../components/Post/PostReactions";
 import axios from "axios";
+import { RootState } from "../store";
 
 const POSTS_URL = "https://jsonplaceholder.typicode.com/posts";
 
@@ -182,8 +183,6 @@ const PostsSlice = createSlice({
   },
 });
 
-type statePosts = { posts: PostsType };
-
 export const { addReaction } = PostsSlice.actions;
 
 export const {
@@ -194,8 +193,8 @@ export const {
   (state: { posts: EntityState<PostType> }) => state.posts
 );
 
-export const selectStatus = (state: statePosts) => state.posts.status;
-export const selectError = (state: statePosts) => state.posts.error;
+export const selectStatus = (state: RootState) => state.posts.status;
+export const selectError = (state: RootState) => state.posts.error;
 
 export const selectPostsByUserID = createSelector(
   [selectAllPosts, (_, userId) => userId],
