@@ -1,17 +1,14 @@
-import { PostType } from "../../helpers/posts/PostsType";
 import PostAuthor from "./PostAuthor";
 import PostReactions from "./PostReactions";
 import PostDate from "./PostDate";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectPostById } from "../../helpers/posts/PostsSlice";
-import { EntityState } from "@reduxjs/toolkit";
+import { RootState } from "../../helpers/store";
 
 export default function Post(props: { postID: number }) {
   const { postID } = props;
-  const post = useSelector((state: { posts: EntityState<PostType> }) =>
-    selectPostById(state, postID)
-  );
+  const post = useSelector((state: RootState) => selectPostById(state, postID));
 
   return (
     <>

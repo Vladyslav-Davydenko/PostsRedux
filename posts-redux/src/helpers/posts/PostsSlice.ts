@@ -189,9 +189,7 @@ export const {
   selectAll: selectAllPosts,
   selectById: selectPostById,
   selectIds: selectPostIds,
-} = postsAdapter.getSelectors(
-  (state: { posts: EntityState<PostType> }) => state.posts
-);
+} = postsAdapter.getSelectors((state: RootState) => state.posts);
 
 export const selectStatus = (state: RootState) => state.posts.status;
 export const selectError = (state: RootState) => state.posts.error;
