@@ -1,0 +1,44 @@
+.header {
+  height: 10dvh;
+  background-color: $primary-color;
+  display: flex;
+  justify-content: center;
+
+  & .navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    margin-inline: 2rem;
+  }
+
+  & .nav-title {
+    color: $secondary-color;
+  }
+
+  & .links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-size: 1.5rem;
+
+    & .link {
+      opacity: 0.8;
+      transition: all 0.3s;
+
+      &:hover {
+        opacity: 1;
+        transform: translateY(-1px) scale(1.1);
+      }
+
+      &:active {
+        transform: translateY(2px);
+      }
+
+      &.active {
+        opacity: 1;
+      }
+    }
+  }
+}
