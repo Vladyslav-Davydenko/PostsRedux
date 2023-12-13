@@ -1,7 +1,12 @@
-import { createEntityAdapter, EntityState } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSelector,
+  EntityState,
+} from "@reduxjs/toolkit";
 import { PostType } from "./PostsType";
 import { apiSlice } from "../api/apiSlice";
 import { sub } from "date-fns";
+import { RootState } from "../store";
 
 const postsAdapter = createEntityAdapter({
   sortComparer: (a: PostType, b: PostType) => b.date.localeCompare(a.date),
@@ -32,7 +37,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 
         return postsAdapter.setAll(initialState, loadedPosts);
       },
-      providesTags: (result, error, arg) => {
+      providesTags: (result) => {
         if (!result?.ids) {
           return [{ type: "Post" as const, id: "LIST" }];
         }
@@ -46,3 +51,18 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 });
 
 export const { useGetPostsQuery } = extendedApiSlice;
+
+export const selectPostResult = extendedApiSlice.endpoints.getPosts.select();
+
+export const selectPostData = createSelector(
+  selectPostResult,
+  (postResults) => postResults.data // normalized state object with ids and enteties
+);
+
+export const {
+  selectAll: selectAllPosts,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+} = postsAdapter.getSelectors(
+  (state: RootState) => selectPostData(state) ?? initialState
+);
