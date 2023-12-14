@@ -71,7 +71,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         return [...result.ids.map((id) => ({ type: "Post" as const, id }))];
       },
     }),
-    addNewPost: builder.mutation<Partial<PostType>, PostType>({
+    addNewPost: builder.mutation<PostType, Partial<PostType>>({
       query: (initialPost) => ({
         url: "/posts",
         method: "POST",
@@ -90,10 +90,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Post", id: "LIST" }],
     }),
-    updatePost: builder.mutation<Partial<PostType>, PostType>({
+    updatePost: builder.mutation<PostType, Partial<PostType>>({
       query: (updatedPost) => ({
         url: "/posts",
-        method: "POST",
+        method: "PUT",
         body: {
           ...updatedPost,
           date: new Date().toISOString(),
@@ -101,7 +101,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
-    deletePost: builder.mutation<Partial<PostType>, PostType>({
+    deletePost: builder.mutation<PostType, Partial<PostType>>({
       query: (id) => ({
         url: `/posts/${id}`,
         method: "DELETE",
@@ -110,6 +110,38 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         },
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
+    addReaction: builder.mutation({
+      query: ({ postId, reactions }) => ({
+        url: `posts/${postId}`,
+        method: "PATCH",
+        body: {
+          reactions,
+        },
+      }),
+      async onQueryStarted(
+        { postId, reactions },
+        { dispatch, queryFulfilled }
+      ) {
+        const patchResults = dispatch(
+          extendedApiSlice.util.updateQueryData(
+            "getPosts",
+            undefined,
+            (draft) => {
+              // immer let us make mutable changes here
+              const post = draft.entities[postId];
+              console.log(draft.entities);
+              if (post) post.reactions = reactions;
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResults.undo();
+        }
+      },
     }),
   }),
 });
@@ -120,6 +152,7 @@ export const {
   useAddNewPostMutation,
   useDeletePostMutation,
   useUpdatePostMutation,
+  useAddReactionMutation,
 } = extendedApiSlice;
 
 export const selectPostResult = extendedApiSlice.endpoints.getPosts.select();

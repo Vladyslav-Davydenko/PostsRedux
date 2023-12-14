@@ -1,6 +1,5 @@
-import { useDispatch } from "react-redux";
 import { PostType } from "../../helpers/posts/PostsType";
-import { addReaction } from "../../helpers/posts/PostsSlice";
+import { useAddReactionMutation } from "../../helpers/posts/PostsSlice";
 
 const reactions = {
   thumbsUp: "👍",
@@ -13,8 +12,8 @@ const reactions = {
 export type ReactionType = keyof typeof reactions;
 
 export default function PostReactions(props: { post: PostType }) {
-  const dispatch = useDispatch();
   const post = props.post;
+  const [addReaction] = useAddReactionMutation();
   const postID = post.id;
 
   const postReactions = Object.entries(reactions).map(([reaction, value]) => {
@@ -22,7 +21,17 @@ export default function PostReactions(props: { post: PostType }) {
       <button
         key={reaction}
         type="button"
-        onClick={() => dispatch(addReaction({ postID, reaction }))}
+        onClick={() => {
+          const newValue =
+            (post.reactions[reaction as keyof typeof reactions] as number) + 1;
+          addReaction({
+            postID,
+            reactions: {
+              ...post.reactions,
+              [reaction as keyof typeof reactions]: newValue,
+            },
+          });
+        }}
       >
         {`${value} ${post.reactions[reaction as ReactionType]}`}
       </button>

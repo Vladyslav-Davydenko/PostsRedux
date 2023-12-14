@@ -1,22 +1,21 @@
 import { ChangeEvent } from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  deletePost,
+  useDeletePostMutation,
   selectPostById,
-  updatePost,
+  useUpdatePostMutation,
 } from "../../helpers/posts/PostsSlice";
-import { Status } from "../../helpers/posts/PostsType";
 import { selectAllUsers } from "../../helpers/users/UsersSlice";
-import { AppDispatch, RootState } from "../../helpers/store";
+import { RootState } from "../../helpers/store";
 
 export default function EditPost() {
   const params = useParams();
   const { postID } = params;
   const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
-  const [addRequestStatus, setAddRequestStatus] = useState<Status>("idle");
+  const [deletePost] = useDeletePostMutation();
+  const [updatePost, { isLoading }] = useUpdatePostMutation();
 
   const post = useSelector((state: RootState) =>
     selectPostById(state, Number(postID))
@@ -25,7 +24,9 @@ export default function EditPost() {
 
   const [title, setTitle] = useState(post?.title ?? "Default Title");
   const [content, setContent] = useState(post?.body ?? "Default Content");
-  const [userId, setUserId] = useState(post?.userId ?? "Default UserId");
+  const [userId, setUserId] = useState<number | undefined>(
+    post?.userId ?? undefined
+  );
 
   if (!post) {
     return (
@@ -48,55 +49,44 @@ export default function EditPost() {
   const onContentChanged = (e: ChangeEvent<HTMLTextAreaElement>) =>
     setContent(e.target.value);
   const onAuthorChanged = (e: ChangeEvent<HTMLSelectElement>) =>
-    setUserId(e.target.value);
+    setUserId(Number(e.target.value));
 
-  const canSave =
-    [title, content, userId].every(Boolean) &&
-    addRequestStatus === "idle" &&
-    post;
+  const canSave = [title, content, userId].every(Boolean) && !isLoading && post;
 
-  function onSavePostClicked() {
+  const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus("loading");
-        dispatch(
-          updatePost({
-            id: post.id,
-            title,
-            body: content,
-            userId: Number(userId),
-            reactions: post.reactions,
-          })
-        ).unwrap();
+        await updatePost({
+          id: post.id,
+          title,
+          body: content,
+          userId: Number(userId),
+          reactions: post.reactions,
+        }).unwrap();
 
         setTitle("");
         setContent("");
-        setUserId("");
+        setUserId(undefined);
         navigate(`/post/${postID}`);
       } catch (err: any) {
         console.error("Failed to update the post", err);
-      } finally {
-        setAddRequestStatus("idle");
       }
     }
-  }
+  };
 
-  function onDeletePostClicked() {
+  const onDeletePostClicked = async () => {
     try {
       if (!post?.id) return;
-      setAddRequestStatus("loading");
-      dispatch(deletePost({ id: post?.id })).unwrap();
+      await deletePost({ id: post.id }).unwrap();
 
       setTitle("");
       setContent("");
-      setUserId("");
+      setUserId(undefined);
       navigate("/");
     } catch (err: any) {
       console.error("Failed to delete the post", err);
-    } finally {
-      setAddRequestStatus("idle");
     }
-  }
+  };
 
   return (
     <section className="posts-form">
