@@ -39,10 +39,10 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: (result) => {
         if (!result?.ids) {
-          return [{ type: "Post" as const, id: "LIST" }];
+          return [{ type: "Post", id: "LIST" }];
         }
         return [
-          { type: "Post" as const, id: "LIST" },
+          { type: "Post", id: "LIST" },
           ...result.ids.map((id) => ({ type: "Post" as const, id })),
         ];
       },
@@ -92,7 +92,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
     }),
     updatePost: builder.mutation<PostType, Partial<PostType>>({
       query: (updatedPost) => ({
-        url: "/posts",
+        url: `/posts/${updatedPost.id}`,
         method: "PUT",
         body: {
           ...updatedPost,
@@ -102,7 +102,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
     deletePost: builder.mutation<PostType, Partial<PostType>>({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/posts/${id}`,
         method: "DELETE",
         body: {
@@ -112,15 +112,15 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
     addReaction: builder.mutation({
-      query: ({ postId, reactions }) => ({
-        url: `posts/${postId}`,
+      query: ({ postID, reactions }) => ({
+        url: `posts/${postID}`,
         method: "PATCH",
         body: {
           reactions,
         },
       }),
       async onQueryStarted(
-        { postId, reactions },
+        { postID, reactions },
         { dispatch, queryFulfilled }
       ) {
         const patchResults = dispatch(
@@ -129,8 +129,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
             undefined,
             (draft) => {
               // immer let us make mutable changes here
-              const post = draft.entities[postId];
-              console.log(draft.entities);
+              const post = draft.entities[postID];
               if (post) post.reactions = reactions;
             }
           )

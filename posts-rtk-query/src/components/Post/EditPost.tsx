@@ -9,6 +9,7 @@ import {
 } from "../../helpers/posts/PostsSlice";
 import { selectAllUsers } from "../../helpers/users/UsersSlice";
 import { RootState } from "../../helpers/store";
+import Loader from "../UI/Loader/Loader";
 
 export default function EditPost() {
   const params = useParams();
@@ -55,6 +56,7 @@ export default function EditPost() {
 
   const onSavePostClicked = async () => {
     if (canSave) {
+      console.log(post.id);
       try {
         await updatePost({
           id: post.id,
@@ -63,11 +65,6 @@ export default function EditPost() {
           userId: Number(userId),
           reactions: post.reactions,
         }).unwrap();
-
-        setTitle("");
-        setContent("");
-        setUserId(undefined);
-        navigate(`/post/${postID}`);
       } catch (err: any) {
         console.error("Failed to update the post", err);
       }
@@ -87,6 +84,14 @@ export default function EditPost() {
       console.error("Failed to delete the post", err);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="container">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <section className="posts-form">
