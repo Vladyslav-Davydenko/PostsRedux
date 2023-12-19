@@ -4,11 +4,11 @@ import App from "./App.tsx";
 import "./index.scss";
 import store from "./helpers/store.ts";
 import { Provider } from "react-redux";
-import { fetchUsers } from "./helpers/users/UsersSlice.ts";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { extendedApiSlice } from "./helpers/posts/PostsSlice.ts";
+import { extendedApiUserSlice } from "./helpers/users/UsersSlice.ts";
 
-store.dispatch(fetchUsers());
+store.dispatch(extendedApiUserSlice.endpoints.getUsers.initiate());
 store.dispatch(extendedApiSlice.endpoints.getPosts.initiate());
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

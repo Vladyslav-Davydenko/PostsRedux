@@ -1,9 +1,7 @@
-import { useSelector } from "react-redux";
 import { useGetPostByUserIdQuery } from "../../helpers/posts/PostsSlice";
 import { useParams } from "react-router-dom";
-import { selectUserById } from "../../helpers/users/UsersSlice";
+import { useGetUserByIdQuery } from "../../helpers/users/UsersSlice";
 import Post from "../Post/Post";
-import { RootState } from "../../helpers/store";
 import Loader from "../UI/Loader/Loader";
 
 export default function User() {
@@ -14,10 +12,8 @@ export default function User() {
     isError,
     isSuccess,
     error,
-  } = useGetPostByUserIdQuery();
-  const user = useSelector((state: RootState) =>
-    selectUserById(state, Number(userID))
-  );
+  } = useGetPostByUserIdQuery(Number(userID));
+  const { data: user } = useGetUserByIdQuery(Number(userID));
 
   let content;
   if (isLoading) {

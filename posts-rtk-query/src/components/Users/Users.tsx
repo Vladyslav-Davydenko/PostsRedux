@@ -1,9 +1,15 @@
-import { selectAllUsers } from "../../helpers/users/UsersSlice";
-import { useSelector } from "react-redux";
+import { useGetUsersQuery } from "../../helpers/users/UsersSlice";
 import { Link } from "react-router-dom";
 
 export default function Users() {
-  const users = useSelector(selectAllUsers);
+  const { data: users } = useGetUsersQuery();
+
+  if (!users)
+    return (
+      <div className="container">
+        <h1>Users was not found</h1>
+      </div>
+    );
 
   const renderedUsers = users.map((user) => {
     return (

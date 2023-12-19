@@ -7,7 +7,7 @@ import {
   selectPostById,
   useUpdatePostMutation,
 } from "../../helpers/posts/PostsSlice";
-import { selectAllUsers } from "../../helpers/users/UsersSlice";
+import { useGetUsersQuery } from "../../helpers/users/UsersSlice";
 import { RootState } from "../../helpers/store";
 import Loader from "../UI/Loader/Loader";
 
@@ -21,7 +21,7 @@ export default function EditPost() {
   const post = useSelector((state: RootState) =>
     selectPostById(state, Number(postID))
   );
-  const users = useSelector(selectAllUsers);
+  const { data: users } = useGetUsersQuery();
 
   const [title, setTitle] = useState(post?.title ?? "Default Title");
   const [content, setContent] = useState(post?.body ?? "Default Content");
@@ -37,13 +37,17 @@ export default function EditPost() {
     );
   }
 
-  const usersOptions = users.map((user) => {
-    return (
-      <option key={user.id} value={user.id}>
-        {user.name}
-      </option>
-    );
-  });
+  let usersOptions;
+
+  if (users) {
+    usersOptions = users.map((user) => {
+      return (
+        <option key={user.id} value={user.id}>
+          {user.name}
+        </option>
+      );
+    });
+  }
 
   const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);

@@ -1,6 +1,5 @@
 import { useState, ChangeEvent } from "react";
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../../helpers/users/UsersSlice";
+import { useGetUsersQuery } from "../../helpers/users/UsersSlice";
 import { useAddNewPostMutation } from "../../helpers/posts/PostsSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +11,7 @@ export default function Form() {
 
   const [addNewPost, { isLoading }] = useAddNewPostMutation();
 
-  const users = useSelector(selectAllUsers);
+  const { data: users } = useGetUsersQuery();
 
   const onTitleChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
@@ -21,13 +20,17 @@ export default function Form() {
   const onAuthorChanged = (e: ChangeEvent<HTMLSelectElement>) =>
     setUserId(e.target.value);
 
-  const usersOptions = users.map((user) => {
-    return (
-      <option key={user.id} value={user.id}>
-        {user.name}
-      </option>
-    );
-  });
+  let usersOptions;
+
+  if (users) {
+    usersOptions = users.map((user) => {
+      return (
+        <option key={user.id} value={user.id}>
+          {user.name}
+        </option>
+      );
+    });
+  }
 
   const canSave = [title, content, userId].every(Boolean) && !isLoading;
 

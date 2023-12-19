@@ -21,7 +21,3 @@ export interface UserType {
     bs: string;
   };
 }
-
-export type UsersType = {
-  users: UserType[];
-};

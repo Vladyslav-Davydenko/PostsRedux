@@ -47,7 +47,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         ];
       },
     }),
-    getPostByUserId: builder.query<EntityState<PostType, number>, void>({
+    getPostByUserId: builder.query<EntityState<PostType, number>, number>({
       query: (id) => `/posts/?userId=${id}`,
       transformResponse: (responce: PostType[]) => {
         let min = 1;
