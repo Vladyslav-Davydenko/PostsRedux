@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../helpers/store";
 import { selectPostIds } from "../../helpers/posts/PostsSlice";
 import Post from "../Post/Post";
 import Loader from "../UI/Loader/Loader";
@@ -7,7 +7,7 @@ import { useGetPostsQuery } from "../../helpers/posts/PostsSlice";
 
 export default function Posts() {
   const { isLoading, isError, isSuccess, error } = useGetPostsQuery();
-  const posts = useSelector(selectPostIds);
+  const posts = useAppSelector(selectPostIds);
 
   let content;
 

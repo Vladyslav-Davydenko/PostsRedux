@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../helpers/store";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useDeletePostMutation,
@@ -8,7 +8,6 @@ import {
   useUpdatePostMutation,
 } from "../../helpers/posts/PostsSlice";
 import { useGetUsersQuery } from "../../helpers/users/UsersSlice";
-import { RootState } from "../../helpers/store";
 import Loader from "../UI/Loader/Loader";
 
 export default function EditPost() {
@@ -18,9 +17,7 @@ export default function EditPost() {
   const [deletePost] = useDeletePostMutation();
   const [updatePost, { isLoading }] = useUpdatePostMutation();
 
-  const post = useSelector((state: RootState) =>
-    selectPostById(state, Number(postID))
-  );
+  const post = useAppSelector((state) => selectPostById(state, Number(postID)));
   const { data: users } = useGetUsersQuery();
 
   const [title, setTitle] = useState(post?.title ?? "Default Title");

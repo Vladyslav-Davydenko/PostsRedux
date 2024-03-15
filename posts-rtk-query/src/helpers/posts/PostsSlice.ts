@@ -19,9 +19,9 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<EntityState<PostType, number>, void>({
       query: () => "/posts",
-      transformResponse: (responceData: PostType[]) => {
+      transformResponse: (responseData: PostType[]) => {
         let min = 1;
-        const loadedPosts = responceData.map((post) => {
+        const loadedPosts = responseData.map((post) => {
           if (!post?.date)
             post.date = sub(new Date(), { minutes: min++ }).toISOString();
           if (!post?.reactions)
@@ -47,7 +47,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         ];
       },
     }),
-    getPostByUserId: builder.query<EntityState<PostType, number>, number>({
+    getPostsByUserId: builder.query<EntityState<PostType, number>, number>({
       query: (id) => `/posts/?userId=${id}`,
       transformResponse: (responce: PostType[]) => {
         let min = 1;
@@ -70,6 +70,25 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         if (!result?.ids) return [{ type: "Post", id: "LIST" }];
         return [...result.ids.map((id) => ({ type: "Post" as const, id }))];
       },
+    }),
+    getPostById: builder.query<EntityState<PostType, number>, number>({
+      query: (id) => `posts/${id}`,
+      transformResponse: (result: PostType) => {
+        if (!result?.date)
+          result.date = sub(new Date(), { minutes: 10 }).toISOString();
+        if (!result?.reactions)
+          result.reactions = {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+          };
+        return postsAdapter.setOne(initialState, result);
+      },
+      providesTags: (result) => [
+        { type: "Post", id: result?.ids[0] ?? "LIST" },
+      ],
     }),
     addNewPost: builder.mutation<PostType, Partial<PostType>>({
       query: (initialPost) => ({
@@ -99,7 +118,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
           date: new Date().toISOString(),
         },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+      invalidatesTags: (_result, _error, arg) => [{ type: "Post", id: arg.id }],
     }),
     deletePost: builder.mutation<PostType, Partial<PostType>>({
       query: ({ id }) => ({
@@ -109,7 +128,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
           id,
         },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+      invalidatesTags: (_result, _error, arg) => [{ type: "Post", id: arg.id }],
     }),
     addReaction: builder.mutation({
       query: ({ postID, reactions }) => ({
@@ -147,7 +166,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetPostsQuery,
-  useGetPostByUserIdQuery,
+  useGetPostsByUserIdQuery,
   useAddNewPostMutation,
   useDeletePostMutation,
   useUpdatePostMutation,

@@ -2,13 +2,12 @@ import PostAuthor from "./PostAuthor";
 import PostReactions from "./PostReactions";
 import PostDate from "./PostDate";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../helpers/store";
 import { selectPostById } from "../../helpers/posts/PostsSlice";
-import { RootState } from "../../helpers/store";
 
 export default function Post(props: { postID: number }) {
   const { postID } = props;
-  const post = useSelector((state: RootState) => selectPostById(state, postID));
+  const post = useAppSelector((state) => selectPostById(state, postID));
 
   return (
     <>

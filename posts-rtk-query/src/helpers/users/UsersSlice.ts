@@ -9,7 +9,7 @@ export const extendedApiUserSlice = apiSlice.injectEndpoints({
     }),
     getUserById: builder.query<UserType, number>({
       query: (id) => `/users/${id}`,
-      providesTags: (result, error, arg) => [{ type: "User", id: arg }],
+      providesTags: (_result, _error, arg) => [{ type: "User", id: arg }],
     }),
   }),
 });

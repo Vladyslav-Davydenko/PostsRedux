@@ -1,17 +1,14 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../helpers/store";
 import PostAuthor from "./PostAuthor";
 import PostDate from "./PostDate";
 import PostReactions from "./PostReactions";
 import { selectPostById } from "../../helpers/posts/PostsSlice";
 import { Link, useParams } from "react-router-dom";
-import { RootState } from "../../helpers/store";
 
 export default function SinglePostPage() {
   const param = useParams();
   const postID = param.postID;
-  const post = useSelector((state: RootState) =>
-    selectPostById(state, Number(postID))
-  );
+  const post = useAppSelector((state) => selectPostById(state, Number(postID)));
 
   if (!post) {
     return (

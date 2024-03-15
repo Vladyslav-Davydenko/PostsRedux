@@ -1,4 +1,4 @@
-import { useGetPostByUserIdQuery } from "../../helpers/posts/PostsSlice";
+import { useGetPostsByUserIdQuery } from "../../helpers/posts/PostsSlice";
 import { useParams } from "react-router-dom";
 import { useGetUserByIdQuery } from "../../helpers/users/UsersSlice";
 import Post from "../Post/Post";
@@ -12,7 +12,7 @@ export default function User() {
     isError,
     isSuccess,
     error,
-  } = useGetPostByUserIdQuery(Number(userID));
+  } = useGetPostsByUserIdQuery(Number(userID));
   const { data: user } = useGetUserByIdQuery(Number(userID));
 
   let content;
