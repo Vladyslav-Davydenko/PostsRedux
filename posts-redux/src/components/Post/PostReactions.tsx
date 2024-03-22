@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { PostType } from "../../helpers/posts/PostsType";
 import { addReaction } from "../../helpers/posts/PostsSlice";
+import { memo } from "react";
 
 const reactions = {
   thumbsUp: "👍",
@@ -12,7 +13,7 @@ const reactions = {
 
 export type ReactionType = keyof typeof reactions;
 
-export default function PostReactions(props: { post: PostType }) {
+function PostReactionsComponent(props: { post: PostType }) {
   const dispatch = useDispatch();
   const post = props.post;
   const postID = post.id;
@@ -30,3 +31,6 @@ export default function PostReactions(props: { post: PostType }) {
   });
   return <div className="post-reaction">{postReactions}</div>;
 }
+
+const PostReactions = memo(PostReactionsComponent);
+export default PostReactions;

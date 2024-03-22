@@ -8,8 +8,8 @@ import { apiSlice } from "../api/apiSlice";
 import { sub } from "date-fns";
 import { RootState } from "../store";
 
-const postsAdapter = createEntityAdapter({
-  sortComparer: (a: PostType, b: PostType) => b.date.localeCompare(a.date),
+const postsAdapter = createEntityAdapter<PostType>({
+  sortComparer: (a, b) => b.date.localeCompare(a.date),
 });
 
 const initialState: EntityState<PostType, number> =
@@ -71,26 +71,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         return [...result.ids.map((id) => ({ type: "Post" as const, id }))];
       },
     }),
-    getPostById: builder.query<EntityState<PostType, number>, number>({
-      query: (id) => `posts/${id}`,
-      transformResponse: (result: PostType) => {
-        if (!result?.date)
-          result.date = sub(new Date(), { minutes: 10 }).toISOString();
-        if (!result?.reactions)
-          result.reactions = {
-            thumbsUp: 0,
-            wow: 0,
-            heart: 0,
-            rocket: 0,
-            coffee: 0,
-          };
-        return postsAdapter.setOne(initialState, result);
-      },
-      providesTags: (result) => [
-        { type: "Post", id: result?.ids[0] ?? "LIST" },
-      ],
-    }),
-    addNewPost: builder.mutation<PostType, Partial<PostType>>({
+    addNewPost: builder.mutation<void, Partial<PostType>>({
       query: (initialPost) => ({
         url: "/posts",
         method: "POST",
@@ -109,7 +90,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Post", id: "LIST" }],
     }),
-    updatePost: builder.mutation<PostType, Partial<PostType>>({
+    updatePost: builder.mutation<void, Partial<PostType>>({
       query: (updatedPost) => ({
         url: `/posts/${updatedPost.id}`,
         method: "PUT",
@@ -120,7 +101,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: "Post", id: arg.id }],
     }),
-    deletePost: builder.mutation<PostType, Partial<PostType>>({
+    deletePost: builder.mutation<void, Partial<PostType>>({
       query: ({ id }) => ({
         url: `/posts/${id}`,
         method: "DELETE",
@@ -130,13 +111,11 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: "Post", id: arg.id }],
     }),
-    addReaction: builder.mutation({
+    addReaction: builder.mutation<void, { postID: number; reactions: any }>({
       query: ({ postID, reactions }) => ({
         url: `posts/${postID}`,
         method: "PATCH",
-        body: {
-          reactions,
-        },
+        body: { reactions },
       }),
       async onQueryStarted(
         { postID, reactions },
@@ -147,7 +126,6 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
             "getPosts",
             undefined,
             (draft) => {
-              // immer let us make mutable changes here
               const post = draft.entities[postID];
               if (post) post.reactions = reactions;
             }
